@@ -1,16 +1,28 @@
 org: jotabraga
 app: image-recognition-api
 service: image-recognition
-frameworkVersion: '3'
+frameworkVersion: "3"
 
 provider:
   name: aws
   runtime: nodejs14.x
+  region: us-east-1
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action:
+            - rekognition:DetectLabels
+          Resource: "*"
+        - Effect: Allow
+          Action:
+            - translate:TranslateText
+          Resource: "*"
 
 functions:
-  hello:
-    handler: handler.hello
+  analysis-image:
+    handler: src/index.main
     events:
       - httpApi:
-          path: /
+          path: /analyse
           method: get
