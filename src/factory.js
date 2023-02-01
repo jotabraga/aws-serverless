@@ -7,4 +7,4 @@ const translatorSvc = new aws.Translate();
 
 const handler = new Handler({ rekoSvc, translatorSvc });
 
-module.exports = handler.main.bind(handler); //to make sure about handler context while using this
+module.exports = handler.main.bind(handler); //to make sure that 'this' context is handler instance
