@@ -6,7 +6,8 @@
   "scripts": {
     "invoke": "sls invoke -f analysis-image ",
     "invoke:local": "sls invoke local -f analysis-image ",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest",
+    "test:watch": "jest --watchAll"
   },
   "repository": {
     "type": "git",
@@ -21,5 +22,8 @@
   "homepage": "https://github.com/jotabraga/image-recognition-api#readme",
   "dependencies": {
     "aws-sdk": "2.1128"
+  },
+  "devDependencies": {
+    "jest": "28.1.0"
   }
 }
