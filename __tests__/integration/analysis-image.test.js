@@ -1,6 +1,10 @@
 const requestMock = require("../mocks/request.json");
 const { main } = require("../../src");
 const { expect } = require("@jest/globals");
+const aws = require("aws-sdk");
+aws.config.update({
+  region: "us-east-1",
+});
 
 describe("Image analyse cloud function test suite", () => {
   it("Should return the main certainties about a dog image for a valid dog picture", async () => {

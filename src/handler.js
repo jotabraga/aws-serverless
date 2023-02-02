@@ -1,4 +1,8 @@
 const { get } = require("axios");
+const aws = require("aws-sdk");
+aws.config.update({
+  region: "us-east-1",
+});
 
 module.exports = class Handler {
   constructor({ rekoSvc, translatorSvc }) {
@@ -14,6 +18,17 @@ module.exports = class Handler {
     return buffer;
   }
 
+  async detectImageLabels(buffer) {
+    const result = await this.rekoSvc
+      .detectLabels({
+        Image: {
+          Bytes: buffer,
+        },
+      })
+      .promise();
+    console.log("result", result);
+  }
+
   async main(event) {
     try {
       const { imageUrl } = event.queryStringParameters;
@@ -23,6 +38,9 @@ module.exports = class Handler {
           body: "There is an error in handler: Invalid image url",
         };
       }
+      const buffer = await this.getImageBuffer(imageUrl);
+      console.log("Detecting labels...");
+      const detectedLabels = await this.detectImageLabels(buffer);
       return {
         statusCode: 200,
         body: "Hello",
