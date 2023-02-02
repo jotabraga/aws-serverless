@@ -12,7 +12,7 @@ module.exports = class Handler {
 
   async getImageBuffer(imageUrl) {
     const response = await get(imageUrl, {
-      responseType: "arrayBuffer",
+      responseType: "arraybuffer",
     });
     const buffer = Buffer.from(response.data, "base64");
     return buffer;
@@ -26,7 +26,12 @@ module.exports = class Handler {
         },
       })
       .promise();
-    console.log("result", result);
+    const foundedLabels = result.Labels.filter(
+      ({ Confidence }) => Confidence > 90
+    );
+
+    const labels = foundedLabels.map(({ Name }) => Name).join(" and ");
+    console.log(labels);
   }
 
   async main(event) {
