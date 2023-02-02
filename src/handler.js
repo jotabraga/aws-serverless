@@ -1,3 +1,5 @@
+const axios = require("axios");
+
 module.exports = class Handler {
   constructor({ rekoSvc, translatorSvc }) {
     this.rekoSvc = rekoSvc;
@@ -5,7 +7,14 @@ module.exports = class Handler {
   }
 
   async main(event) {
-    console.log("event", event);
+    const { imageUrl } = event.queryStringParameters;
+    if (!imageUrl) {
+      return {
+        statusCode: 400,
+        body: "There is an error in handler: Invalid image url",
+      };
+    }
+
     return {
       statusCode: 200,
       body: "Hello",

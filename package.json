@@ -21,7 +21,8 @@
   },
   "homepage": "https://github.com/jotabraga/image-recognition-api#readme",
   "dependencies": {
-    "aws-sdk": "2.1128"
+    "aws-sdk": "2.1128",
+    "axios": "0.17"
   },
   "devDependencies": {
     "jest": "28.1.0"
