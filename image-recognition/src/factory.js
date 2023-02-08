@@ -1,5 +1,4 @@
 const aws = require("aws-sdk");
-const axios = require("axios");
 
 const Handler = require("./handler");
 
