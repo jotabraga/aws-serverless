@@ -26,12 +26,36 @@ module.exports = class Handler {
         },
       })
       .promise();
-    const foundedLabels = result.Labels.filter(
+    const foundTerms = result.Labels.filter(
       ({ Confidence }) => Confidence > 90
     );
+    const labels = foundTerms.map(({ Name }) => Name).join(" and ");
+    return { labels, foundTerms };
+  }
 
-    const labels = foundedLabels.map(({ Name }) => Name).join(" and ");
-    console.log(labels);
+  async translateText(text) {
+    const params = {
+      SourceLanguageCode: "en",
+      TargetLanguageCode: "pt",
+      Text: String(text),
+    };
+    const { TranslatedText } = await this.translatorSvc
+      .translateText(params)
+      .promise();
+    return TranslatedText.split(" e ");
+  }
+
+  formatText(labels, foundTerms) {
+    const formatedText = [];
+    for (const index in labels) {
+      const nameInPortuguese = labels[index];
+      const confidence = foundTerms[index].Confidence;
+      formatedText.push(
+        `${confidence.toFixed(2)}% de ser do tipo ${nameInPortuguese}`
+      );
+    }
+    const finalText = formatedText.join("\n");
+    return finalText;
   }
 
   async main(event) {
@@ -44,11 +68,21 @@ module.exports = class Handler {
         };
       }
       const buffer = await this.getImageBuffer(imageUrl);
+
       console.log("Detecting labels...");
-      const detectedLabels = await this.detectImageLabels(buffer);
+
+      const { labels, foundTerms } = await this.detectImageLabels(buffer);
+
+      console.log("Translating to Portuguese-BR...");
+
+      const translatedTerms = await this.translateText(labels);
+      const finalText = this.formatText(translatedTerms, foundTerms);
+
+      console.log("Finishing...");
+
       return {
         statusCode: 200,
-        body: "Hello",
+        body: `A imagem tem\n`.concat(finalText),
       };
     } catch (error) {
       console.error("Error in handler main function", error.stack);
